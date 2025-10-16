@@ -1,0 +1,40 @@
+#!/bin/bash
+
+# -------------------------------
+# Script para iniciar FastAPI
+# Compatible con Linux, macOS y Git Bash/WSL en Windows
+# -------------------------------
+
+APP_PATH="backend.main:app"
+HOST="0.0.0.0"
+PORT="10000"
+
+echo "🚀 Iniciando servidor FastAPI..."
+echo "📁 Aplicación: $APP_PATH"
+echo "🌍 Host: $HOST"
+echo "🔌 Puerto: $PORT"
+echo ""
+
+# Detectar sistema operativo
+OS="$(uname -s)"
+
+case "${OS}" in
+    Linux*)     MACHINE=Linux;;
+    Darwin*)    MACHINE=Mac;;
+    MINGW*)     MACHINE=Windows;;
+    MSYS*)      MACHINE=Windows;;
+    CYGWIN*)    MACHINE=Windows;;
+    *)          MACHINE="Desconocido"
+esac
+
+echo "🧩 Sistema detectado: $MACHINE"
+echo ""
+
+# Ejecutar según sistema
+if [ "$MACHINE" = "Windows" ]; then
+    echo " Ejecutando en entorno Windows (Git Bash o WSL)..."
+    python -m uvicorn $APP_PATH --host $HOST --port $PORT --reload
+else
+    echo " Ejecutando en Linux/Mac..."
+    uvicorn $APP_PATH --host $HOST --port $PORT --reload
+fi
