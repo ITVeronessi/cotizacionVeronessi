@@ -2,9 +2,9 @@
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.orm import Session
-from backend.database import get_db, engine
-from backend.models import Anestesia, TipoAnestesia, Medicamentos, Insumos, Equipos, TipoCirugia, Cirugia
-from backend.schemas import *
+from database import get_db, engine
+from models import Anestesia, TipoAnestesia, Medicamentos, Insumos, Equipos, TipoCirugia, Cirugia
+from schemas import *
 from typing import List
 from fastapi.middleware.cors import CORSMiddleware
 
