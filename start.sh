@@ -1,4 +1,5 @@
 #!/bin/bash
+#!/bin/bash
 echo "🚀 Iniciando servidor FastAPI..."
 
 # Confirmar ruta
