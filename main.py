@@ -8,7 +8,8 @@ from schemas import *
 from typing import List
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi import Query
-
+# usar graficos
+from sqlalchemy import func
 app = FastAPI(title="API de Anestesias")
 origins = [
     "http://localhost:3000",              # desarrollo local
@@ -334,3 +335,18 @@ def delete_cirugia(id: int, db: Session = Depends(get_db)):
     return {"message": "Cirugia eliminada correctamente"}
 # ---------------------------
 # Fin del CRUD
+@app.get("/stockMedicamentos/")
+def stock(db: Session = Depends(get_db)):
+    # Contar todos los registros de la tabla
+    total_medicamentos = db.query(func.count(Medicamentos.idmedicamentos)).scalar() or 0
+    total_anestesias = db.query(func.count(Anestesia.idanestecia)).scalar() or 0
+    total_insumos = db.query(func.count(Insumos.idinsumos)).scalar() or 0
+    total_equipos = db.query(func.count(Equipos.idequipos)).scalar() or 0
+
+
+    return {
+        "total_medicamentos": total_medicamentos
+        ,"total_anestesias": total_anestesias
+        ,"total_insumos": total_insumos
+        ,"total_equipos": total_equipos
+    }

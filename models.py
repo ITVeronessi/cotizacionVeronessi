@@ -61,7 +61,4 @@ class Cirugia(Base):
     equipo = relationship("Equipos")   
     medicamento = relationship("Medicamentos")
     anestesia = relationship("Anestesia")
-    tipo_cirugia = relationship("TipoCirugia")
-
-
-    
+    tipo_cirugia = relationship("TipoCirugia")    
