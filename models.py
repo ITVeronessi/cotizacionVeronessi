@@ -19,7 +19,7 @@ class Anestesia(Base):
     tipo_anestesia = Column(Integer, ForeignKey("tipo_anestesia.idtipoanestecia"))
     precio = Column(Numeric(10, 2), nullable=False)
 
-    # Relación con tipo
+    # Relación con tipo 
     tipo = relationship("TipoAnestesia", back_populates="anestesias")
 class Medicamentos(Base):
     __tablename__ = "medicamentos"
@@ -43,7 +43,7 @@ class Equipos(Base):
 class TipoCirugia(Base):
     __tablename__ = "tipo_cirugia"
     id_tipo_cirugia= Column(Integer, primary_key=True, index=True)
-    nombrecirugia= Column(String(120), nullable=False)
+    nombre= Column(String(120), nullable=False)
 
 #cirugia
 class Cirugia(Base):
@@ -52,7 +52,7 @@ class Cirugia(Base):
     nombre= Column(String(120), nullable=False)
     id_insumo= Column(Integer, ForeignKey("insumos.idinsumos"))
     id_equipo= Column(Integer, ForeignKey("equipos.idequipos"))
-    idmedicamentos= Column(Integer, ForeignKey("medicamentos.idmedicamentos"))
+    id_medicamento= Column(Integer, ForeignKey("medicamentos.idmedicamentos"))
     id_anestesia= Column(Integer, ForeignKey("anestesia.idanestecia"))
     id_tipo_cirugia= Column(Integer, ForeignKey("tipo_cirugia.id_tipo_cirugia"))
     precio= Column(Numeric(10,2), nullable=False)
@@ -62,6 +62,6 @@ class Cirugia(Base):
     medicamento = relationship("Medicamentos")
     anestesia = relationship("Anestesia")
     tipo_cirugia = relationship("TipoCirugia")
-    
+
 
     

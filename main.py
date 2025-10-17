@@ -7,14 +7,21 @@ from models import Anestesia, TipoAnestesia, Medicamentos, Insumos, Equipos, Tip
 from schemas import *
 from typing import List
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi import Query
 
 app = FastAPI(title="API de Anestesias")
+origins = [
+    "http://http://0.0.0.0:8000",  # desarrollo
+    "https://cotizacionveronessi.onrender.com"  # producción Netlify
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=origins,
+    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
-) 
+)
 
 # ---------------------------
 # CRUD: Tipo de Anestesia
@@ -235,6 +242,7 @@ def create_tipo_cirugia(data: TipoCirugiaCreate, db: Session = Depends(get_db)):
 @app.get("/tipo-cirugia/", response_model=List[TipoCirugiaResponse])
 def get_tipos_cirugia(db: Session = Depends(get_db)):
     return db.query(TipoCirugia).all()
+
 @app.get("/tipo-cirugia/{id}", response_model=TipoCirugiaResponse)
 def get_tipo_cirugia(id: int, db: Session = Depends(get_db)):
     tipo = db.query(TipoCirugia).filter(TipoCirugia.id_tipo_cirugia == id).first()
@@ -282,6 +290,8 @@ def create_cirugia(data: CirugiaCreate, db: Session = Depends(get_db)):
 @app.get("/cirugia/", response_model=List[CirugiaResponse])
 def get_cirugias(db: Session = Depends(get_db)):
     return db.query(Cirugia).all()
+
+
 @app.get("/cirugia/{id}", response_model=CirugiaResponse)
 def get_cirugia(id: int, db: Session = Depends(get_db)):
     cirugia = db.query(Cirugia).filter(Cirugia.id_cirugia == id).first()
