@@ -11,7 +11,7 @@ from fastapi import Query
 
 app = FastAPI(title="API de Anestesias")
 origins = [
-    "http://http://0.0.0.0:8000",  # desarrollo
+    "http://localhost:3000",  # desarrollo
     "https://cotizacionveronessi.onrender.com"  # producción Netlify
 ]
 
