@@ -11,9 +11,14 @@ from fastapi import Query
 
 app = FastAPI(title="API de Anestesias")
 origins = [
-    "http://localhost:3000",  # desarrollo
-    "https://cotizacionveronessi.onrender.com"  # producción Netlify
+    "http://localhost:3000",              # desarrollo local
+    "http://127.0.0.1:5500",              # Live Server local
+    "https://frontendcotizacion.netlify.app",  # dominio real del frontend
+    "https://cotizacionveronessi.onrender.com" # dominio backend (Render)
 ]
+
+
+
 
 app.add_middleware(
     CORSMiddleware,
