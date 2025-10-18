@@ -11,13 +11,22 @@ from fastapi import Query
 # usar graficos
 from sqlalchemy import func
 app = FastAPI(title="API de Anestesias")
+
+# --- 🔥 Configuración CORS ---
 origins = [
-    "http://localhost:3000",              # desarrollo local
-    "http://127.0.0.1:5500",              # Live Server local
-    "https://frontendcotizacion.netlify.app",  # dominio real del frontend
-    "https://cotizacionveronessi.onrender.com" # dominio backend (Render)
+    "http://localhost:3000",               # Desarrollo React
+    "http://127.0.0.1:5500",               # Live Server
+    "https://frontendcotizacion.netlify.app",  # Frontend deploy
+    "https://cotizacionveronessi.onrender.com" # Backend Render
 ]
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,         # o ["*"] para permitir todo
+    allow_credentials=True,
+    allow_methods=["*"],           # GET, POST, PUT, DELETE...
+    allow_headers=["*"],
+)
 
 
 
@@ -134,13 +143,13 @@ def get_medicamentos(db: Session = Depends(get_db)):
     return db.query(Medicamentos).all()
 @app.get("/medicamentos/{id}", response_model=MedicamentosResponse)
 def get_medicamento(id: int, db: Session = Depends(get_db)):
-    medicamento = db.query(Medicamentos).filter(Medicamentos.idmedicamento == id).first()
+    medicamento = db.query(Medicamentos).filter(Medicamentos.idmedicamentos == id).first()
     if not medicamento:
         raise HTTPException(status_code=404, detail="Medicamento no encontrado")
     return medicamento
 @app.put("/medicamentos/{id}", response_model=MedicamentosResponse)
 def update_medicamento(id: int, data: MedicamentosCreate, db: Session = Depends(get_db)):
-    medicamento = db.query(Medicamentos).filter(Medicamentos.idmedicamento == id).first()
+    medicamento = db.query(Medicamentos).filter(Medicamentos.idmedicamentos == id).first()
     if not medicamento:
         raise HTTPException(status_code=404, detail="Medicamento no encontrado")
     medicamento.nombremedicamento = data.nombremedicamento
@@ -150,7 +159,7 @@ def update_medicamento(id: int, data: MedicamentosCreate, db: Session = Depends(
     return medicamento
 @app.delete("/medicamentos/{id}")
 def delete_medicamento(id: int, db: Session = Depends(get_db)):
-    medicamento = db.query(Medicamentos).filter(Medicamentos.idmedicamento == id).first()
+    medicamento = db.query(Medicamentos).filter(Medicamentos.idmedicamentos == id).first()
     if not medicamento:
         raise HTTPException(status_code=404, detail="Medicamento no encontrado")
     db.delete(medicamento)
@@ -179,7 +188,7 @@ def get_insumo(id: int, db: Session = Depends(get_db)):
 @app.put("/insumos/{id}", response_model=InsumosResponse)
 def update_insumo(id: int, data: InsumosCreate, db: Session = Depends
 (get_db)):
-    insumo = db.query(Insumos).filter(Insumos.idinsumo == id).first()
+    insumo = db.query(Insumos).filter(Insumos.idinsumos == id).first()
     if not insumo:
         raise HTTPException(status_code=404, detail="Insumo no encontrado")
     insumo.nombreinsumo = data.nombreinsumo
@@ -189,7 +198,7 @@ def update_insumo(id: int, data: InsumosCreate, db: Session = Depends
     return insumo
 @app.delete("/insumos/{id}")
 def delete_insumo(id: int, db: Session = Depends(get_db)):
-    insumo = db.query(Insumos).filter(Insumos.idinsumo == id).first()
+    insumo = db.query(Insumos).filter(Insumos.idinsumos == id).first()
     if not insumo:
         raise HTTPException(status_code=404, detail="Insumo no encontrado")
     db.delete(insumo)
