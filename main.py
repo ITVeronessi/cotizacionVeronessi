@@ -14,25 +14,14 @@ app = FastAPI(title="API de Anestesias")
 
 # --- 🔥 Configuración CORS ---
 origins = [
-    "http://localhost:3000",               # Desarrollo React
-    "http://127.0.0.1:5500",               # Live Server
-    "https://frontendcotizacion.netlify.app",  # Frontend deploy
-    "https://cotizacionveronessi.onrender.com" # Backend Render
+    "http://localhost:8000",
+    "http://127.0.0.1:5500",
+    "https://frontendcotizacion.netlify.app",
 ]
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,         # o ["*"] para permitir todo
-    allow_credentials=True,
-    allow_methods=["*"],           # GET, POST, PUT, DELETE...
-    allow_headers=["*"],
-)
-
-
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=origins,  # o ["*"] si estás probando
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
