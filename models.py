@@ -45,20 +45,15 @@ class TipoCirugia(Base):
     id_tipo_cirugia= Column(Integer, primary_key=True, index=True)
     nombre= Column(String(120), nullable=False)
 
-#cirugia
+#cirugia  
 class Cirugia(Base):
     __tablename__ = "cirugia"
-    id_cirugia= Column(Integer, primary_key=True, index=True)
-    nombre= Column(String(120), nullable=False)
-    id_insumo= Column(Integer, ForeignKey("insumos.idinsumos"))
-    id_equipo= Column(Integer, ForeignKey("equipos.idequipos"))
-    id_medicamento= Column(Integer, ForeignKey("medicamentos.idmedicamentos"))
-    id_anestesia= Column(Integer, ForeignKey("anestesia.idanestecia"))
-    id_tipo_cirugia= Column(Integer, ForeignKey("tipo_cirugia.id_tipo_cirugia"))
-    precio= Column(Numeric(10,2), nullable=False)
-    # Relaciones
-    insumo = relationship("Insumos")
-    equipo = relationship("Equipos")   
-    medicamento = relationship("Medicamentos")
-    anestesia = relationship("Anestesia")
-    tipo_cirugia = relationship("TipoCirugia")    
+
+    id_cirugia = Column(Integer, primary_key=True, index=True)
+    nombre = Column(String(150), nullable=False)
+    precio = Column(Numeric(10, 2), nullable=False)
+    id_tipo_cirugia = Column(Integer, ForeignKey("tipo_cirugia.id_tipo_cirugia"), nullable=True)
+    id_insumo = Column(Integer, ForeignKey("insumos.idinsumo"), nullable=True)
+    id_medicamentos = Column(Integer, ForeignKey("medicamentos.idmedicamentos"), nullable=True)
+    id_anestesia = Column(Integer, ForeignKey("anestesia.idanestecia"), nullable=True)
+    id_equipo = Column(Integer, ForeignKey("equipos.idequipo"), nullable=True)

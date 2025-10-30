@@ -285,23 +285,22 @@ def delete_tipo_cirugia(id: int, db: Session = Depends(get_db)):
 # ---------------------------
 #cirugia
 # ---------------------------
+
 @app.post("/cirugia", response_model=CirugiaResponse)
 def create_cirugia(data: CirugiaCreate, db: Session = Depends(get_db)):
-    # Verificar que los IDs foráneos existen
-    insumo = db.query(Insumos).filter(Insumos.idinsumo == data.id_insumo).first()
-    equipo = db.query(Equipos).filter(Equipos.idequipo == data.id_equipo).first()
-    medicamento = db.query(Medicamentos).filter(Medicamentos.idmedicamento == data.idmedicamentos).first()
-    anestesia = db.query(Anestesia).filter(Anestesia.idanestecia == data.id_anestesia).first()
-    tipo_cirugia = db.query(TipoCirugia).filter(TipoCirugia.id_tipo_cirugia == data.id_tipo_cirugia).first()
+    # Verificar solo los campos que tengan valor
+    if data.id_tipo_cirugia:
+        tipo_cirugia = db.query(TipoCirugia).filter(TipoCirugia.id_tipo_cirugia == data.id_tipo_cirugia).first()
+        if not tipo_cirugia:
+            raise HTTPException(status_code=404, detail="Tipo de cirugía no encontrado")
 
-    if not insumo or not equipo or not medicamento or not anestesia or not tipo_cirugia:
-        raise HTTPException(status_code=404, detail="Uno o más IDs foráneos no encontrados")
-
+    # Los demás pueden ser null, así que no se validan
     nueva = Cirugia(**data.dict())
     db.add(nueva)
     db.commit()
     db.refresh(nueva)
     return nueva
+
 @app.get("/cirugia/", response_model=List[CirugiaResponse])
 def get_cirugias(db: Session = Depends(get_db)):
     return db.query(Cirugia).all()

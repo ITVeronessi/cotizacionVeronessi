@@ -69,13 +69,12 @@ class TipoCirugiaResponse(TipoCirugiaBase):
         orm_mode = True
 #----- Cirugia -----
 # ----- Cirugia -----
-
 class CirugiaBase(BaseModel):
     nombre: str
-    id_insumo: Optional[int] = None
-    id_equipo: Optional[int] = None
-    id_medicamento: Optional[int] = None
-    id_anestesia: Optional[int] = None
+    idinsumo: Optional[int] = None
+    idequipo: Optional[int] = None
+    idmedicamentos: Optional[int] = None
+    idanestecia: Optional[int] = None
     id_tipo_cirugia: Optional[int] = None
     precio: float
 
