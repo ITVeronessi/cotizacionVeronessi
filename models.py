@@ -2,15 +2,22 @@ from sqlalchemy import Column, Integer, String, Numeric, ForeignKey
 from sqlalchemy.orm import relationship
 from database import Base
 
+# ========================
+# Tipo de Anestesia
+# ========================
 class TipoAnestesia(Base):
     __tablename__ = "tipo_anestesia"
+
     idtipoanestecia = Column(Integer, primary_key=True, index=True)
     nombre = Column(String(120), nullable=False)
 
-    # Relación con anestesia
-    anestesias = relationship("Anestesia", back_populates="tipo")
+    # Relación opcional con Anestesia
+    anestesias = relationship("Anestesia", back_populates="tipo", lazy="joined")
 
 
+# ========================
+# Anestesia
+# ========================
 class Anestesia(Base):
     __tablename__ = "anestesia"
 
@@ -19,33 +26,59 @@ class Anestesia(Base):
     tipo_anestesia = Column(Integer, ForeignKey("tipo_anestesia.idtipoanestecia"))
     precio = Column(Numeric(10, 2), nullable=False)
 
-    # Relación con tipo 
-    tipo = relationship("TipoAnestesia", back_populates="anestesias")
+    # Relación con TipoAnestesia
+    tipo = relationship("TipoAnestesia", back_populates="anestesias", lazy="joined")
+
+
+# ========================
+# Medicamentos
+# ========================
 class Medicamentos(Base):
     __tablename__ = "medicamentos"
-    idmedicamentos= Column(Integer, primary_key=True, index=True)
-    nombremedicamento= Column(String(120), nullable=False)
-    precio= Column(Numeric(10,2), nullable=False)
-# Insumos idmedicamentos
+
+    idmedicamentos = Column(Integer, primary_key=True, index=True)
+    nombremedicamento = Column(String(120), nullable=False)
+    precio = Column(Numeric(10, 2), nullable=False)
+
+
+# ========================
+# Insumos
+# ========================
 class Insumos(Base):
     __tablename__ = "insumos"
-    idinsumos= Column(Integer, primary_key=True, index=True)
-    nombreinsumo= Column(String(120), nullable=False)
-    precio= Column(Numeric(10,2), nullable=False)
 
-#equipos
+    idinsumos = Column(Integer, primary_key=True, index=True)
+    nombreinsumo = Column(String(120), nullable=False)
+    precio = Column(Numeric(10, 2), nullable=False)
+
+
+# ========================
+# Equipos
+# ========================
 class Equipos(Base):
     __tablename__ = "equipos"
-    idequipos= Column(Integer, primary_key=True, index=True)
-    nombreequipo= Column(String(120), nullable=False)
-    precio= Column(Numeric(10,2), nullable=False)
-#tipo cirugia
+
+    idequipos = Column(Integer, primary_key=True, index=True)
+    nombreequipo = Column(String(120), nullable=False)
+    precio = Column(Numeric(10, 2), nullable=False)
+
+
+# ========================
+# Tipo de Cirugia
+# ========================
 class TipoCirugia(Base):
     __tablename__ = "tipo_cirugia"
-    id_tipo_cirugia= Column(Integer, primary_key=True, index=True)
-    nombre= Column(String(120), nullable=False)
 
-#cirugia  
+    id_tipo_cirugia = Column(Integer, primary_key=True, index=True)
+    nombre = Column(String(120), nullable=False)
+
+    # Relación opcional con Cirugia
+    cirugias = relationship("Cirugia", back_populates="tipo_cirugia", lazy="joined")
+
+
+# ========================
+# Cirugia
+# ========================
 class Cirugia(Base):
     __tablename__ = "cirugia"
 
@@ -53,7 +86,6 @@ class Cirugia(Base):
     nombre = Column(String(150), nullable=False)
     precio = Column(Numeric(10, 2), nullable=False)
     id_tipo_cirugia = Column(Integer, ForeignKey("tipo_cirugia.id_tipo_cirugia"), nullable=True)
-    id_insumo = Column(Integer, ForeignKey("insumos.idinsumo"), nullable=True)
-    id_medicamentos = Column(Integer, ForeignKey("medicamentos.idmedicamentos"), nullable=True)
-    id_anestesia = Column(Integer, ForeignKey("anestesia.idanestecia"), nullable=True)
-    id_equipo = Column(Integer, ForeignKey("equipos.idequipo"), nullable=True)
+
+    # Relación opcional con TipoCirugia
+    tipo_cirugia = relationship("TipoCirugia", back_populates="cirugias", lazy="joined")

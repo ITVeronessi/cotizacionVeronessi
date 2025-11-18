@@ -8,6 +8,7 @@ from schemas import *
 from typing import List
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi import Query
+from sqlalchemy.orm import joinedload
 # usar graficos
 from sqlalchemy import func
 app = FastAPI(title="API de Anestesias")
@@ -32,7 +33,7 @@ app.add_middleware(
 # CRUD: Tipo de Anestesia
 # ---------------------------
 
-@app.post("/tipo-anestesia/", response_model=TipoAnestesiaResponse)
+@app.post("/tipo-anestesia", response_model=TipoAnestesiaResponse)
 def create_tipo_anestesia(data: TipoAnestesiaCreate, db: Session = Depends(get_db)):
     nuevo = TipoAnestesia(**data.dict())
     db.add(nuevo)
@@ -293,8 +294,9 @@ def create_cirugia(data: CirugiaCreate, db: Session = Depends(get_db)):
 
 @app.get("/cirugia/", response_model=List[CirugiaResponse])
 def get_cirugias(db: Session = Depends(get_db)):
-    return db.query(Cirugia).all()
-
+    # Usamos joinedload para traer la relación con TipoCirugia
+    cirugias = db.query(Cirugia).options(joinedload(Cirugia.tipo_cirugia)).all()
+    return cirugias
 
 @app.get("/cirugia/{id}", response_model=CirugiaResponse)
 def get_cirugia(id: int, db: Session = Depends(get_db)):
@@ -302,27 +304,24 @@ def get_cirugia(id: int, db: Session = Depends(get_db)):
     if not cirugia:
         raise HTTPException(status_code=404, detail="Cirugia no encontrada")
     return cirugia
+
 @app.put("/cirugia/{id}", response_model=CirugiaResponse)
 def update_cirugia(id: int, data: CirugiaCreate, db: Session = Depends(get_db)):
     cirugia = db.query(Cirugia).filter(Cirugia.id_cirugia == id).first()
     if not cirugia:
         raise HTTPException(status_code=404, detail="Cirugia no encontrada")
 
-    # Verificar que los IDs foráneos existen
-    insumo = db.query(Insumos).filter(Insumos.idinsumo == data.id_insumo).first()
-    equipo = db.query(Equipos).filter(Equipos.idequipo == data.id_equipo).first()
-    medicamento = db.query(Medicamentos).filter(Medicamentos.idmedicamento == data.idmedicamentos).first()
-    anestesia = db.query(Anestesia).filter(Anestesia.idanestecia == data.id_anestesia).first()
-    tipo_cirugia = db.query(TipoCirugia).filter(TipoCirugia.id_tipo_cirugia == data.id_tipo_cirugia).first()
-
-    if not insumo or not equipo or not medicamento or not anestesia or not tipo_cirugia:
-        raise HTTPException(status_code=404, detail="Uno o más IDs foráneos no encontrados")
+    if data.id_tipo_cirugia:
+        tipo_cirugia = db.query(TipoCirugia).filter(TipoCirugia.id_tipo_cirugia == data.id_tipo_cirugia).first()
+        if not tipo_cirugia:
+            raise HTTPException(status_code=404, detail="Tipo de cirugía no encontrado")
 
     for key, value in data.dict().items():
         setattr(cirugia, key, value)
     db.commit()
     db.refresh(cirugia)
     return cirugia
+
 @app.delete("/cirugia/{id}")
 def delete_cirugia(id: int, db: Session = Depends(get_db)):
     cirugia = db.query(Cirugia).filter(Cirugia.id_cirugia == id).first()
